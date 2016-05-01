@@ -1,0 +1,139 @@
+##ubuntu 16.04
+##hadoop -1.2.1-bin.tar.gz
+
+##enter to root mode
+sudo -s
+apt-get install vim
+vim /etc/lightdm/lightdm.conf
+
+##修改為
+[SeatDefaults]
+user-session=ubuntu
+greeter-session=unity-greeter
+greeter-show-manual-login=true
+allow-guest=false
+
+sudo passwd root
+reboot -h now
+##記得換成root
+
+##安裝jdk有問題 用內建的吧 http://apexu.com/apexu/tw/modules/publisher/item.php?itemid=35
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java7-installer
+java -version
+
+
+apt-get install ssh
+/etc/init.d/ssh start
+ps -e |grep ssh
+
+ssh-keygen -t rsa -P ""
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh localhost
+exit
+ssh loclahost
+
+apt-get install rsync
+
+##下載hadoop-1.2.1-bin.tar.gz
+mkdir /usr/local/hadoop
+cd /root/Downloads/
+tar xzf hadoop-1.2.1-bin.tar.gz
+mv hadoop-1.2.1 /usr/local/hadoop
+cd /usr/local/hadoop/hadoop-1.2.1/conf
+vim hadoop-env.sh
+
+##加入JAVA_HOME  路徑因為是自動安裝,需要修改
+export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+
+source hadoop-env.sh
+vim ~/.bashrc
+
+##路徑要再修改
+export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASS_PATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:/usr/local/hadoop/hadoop-1.2.1/bin:${PATH}
+
+source ~/.bashrc
+hadoop version
+##先到這
+
+##wordcount
+mkdir input
+cp conf/* input
+
+##start wordcount
+hadoop jar hadoop-example-1.2.1.jar wordcount input output
+##檢視結果
+cat output/*
+
+
+mkdir tmp
+mkdir hdfs
+mkdir hdfs/data
+mkdir hdfs/name
+cd conf
+vim core-site.xml
+
+<configuration>
+        <property>
+                <name>fs.default.name</name>
+                <value>hdfs://localhost:9000</value>
+        </property>
+        <property>
+                <name>hadoop.tmp.dir</name>
+                <value>/usr/local/hadoop/hadoop-1.2.1/tmp</value>
+        </property>
+</configuration>
+
+vim hdfs-site.xml
+
+<configuration>
+        <property>
+                <name>dfs.replication</name>
+                <value>1</value>
+        </property>
+        <property>
+                <name>dfs.name.dir</name>
+                <value>/usr/local/hadoop/hadoop-1.2.1/hdfs/name</value>
+        </property>
+        <property>
+                <name>dfs.data.dir</name>
+                <value>/usr/local/hadoop/hadoop-1.2.1/hdfs/data</value>
+        </property>
+</configuration>
+
+vim mapred-site.xml
+
+<configuration>
+         <property>
+                <name>mapred.job.tracker</name>
+                <value>localhost:9001</value>
+        </property>
+</configuration>
+
+hadoop namenode -format
+start-all.sh
+jps
+
+##hadoop執行狀態
+##http://localhost:50070/dfshealth.jsp
+##localhost:50060/tasktracker.jsp
+
+##dfs中建立input目錄
+hadoop dfs -mkdir input
+hadoop dfs -copyFromLocal /usr/local/hadoop/hadoop-1.2.1/conf/* input
+cd /usr/local/hadoop/hadoop-1.2.1/
+hadoop jar hadoop-examples-1.2.1.jar wordcount input output
+hadoop dfs -cat output
+bin/stop-all.sh
+
+##解決登入時的錯誤
+http://home.gamer.com.tw/creationDetail.php?sn=2808528
+##安裝32bit相關套件
+http://askubuntu.com/questions/634024/bash-usr-bin-java-no-such-file-or-directory
+##lock相關問題
+http://www.360doc.com/content/10/1026/11/474846_64097959.shtml
+http://www.360doc.com/content/14/1224/11/11400509_435371898.shtml
