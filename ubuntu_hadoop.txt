@@ -127,8 +127,9 @@ hadoop dfs -mkdir input
 hadoop dfs -copyFromLocal /usr/local/hadoop/hadoop-1.2.1/conf/* input
 cd /usr/local/hadoop/hadoop-1.2.1/
 hadoop jar hadoop-examples-1.2.1.jar wordcount input output
-hadoop dfs -cat output
+hadoop dfs -cat output/*
 bin/stop-all.sh
+##./stop-all.sh
 
 ##解決登入時的錯誤
 http://home.gamer.com.tw/creationDetail.php?sn=2808528
@@ -137,3 +138,6 @@ http://askubuntu.com/questions/634024/bash-usr-bin-java-no-such-file-or-director
 ##lock相關問題
 http://www.360doc.com/content/10/1026/11/474846_64097959.shtml
 http://www.360doc.com/content/14/1224/11/11400509_435371898.shtml
+
+
+###分散前就做到這?
