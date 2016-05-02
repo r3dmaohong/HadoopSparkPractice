@@ -141,3 +141,16 @@ http://www.360doc.com/content/14/1224/11/11400509_435371898.shtml
 
 
 ###分散前就做到這?
+
+ifconf
+cd ~/
+vim /etc/hostname
+Master
+#reboot
+hostname
+vim /etc/hosts
+改Master跟其IP
+Slave1 ip
+Slave2 ip
+ping Master
+#停止按Press Ctrl+C or Ctrl+|
