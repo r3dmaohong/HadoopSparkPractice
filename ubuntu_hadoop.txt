@@ -144,13 +144,17 @@ http://www.360doc.com/content/14/1224/11/11400509_435371898.shtml
 
 ifconf
 cd ~/
+
+#reboot
 vim /etc/hostname
-Master
 #reboot
 hostname
 vim /etc/hosts
 改Master跟其IP
 Slave1 ip
 Slave2 ip
-ping Master
+ping Master 與Slave1 2 做測試
 #停止按Press Ctrl+C or Ctrl+|
+
+
+
