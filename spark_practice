@@ -1,0 +1,26 @@
+mkdir /usr/local/spark
+cd ~/Downloads
+tar -zxf spark-1.0.0-bin-hadoop1.tgz
+mv spark-1.0.0-bin-hadoop1 /usr/local/spark
+cd /usr/local/spark
+vim ~/.bashrc
+
+export SPARK_HOME=/usr/local/spark/spark-1.0.0-bin-hadoop1
+
+source ~/.bashrc
+cd /usr/local/spark/spark-1.0.0-bin-hadoop1/conf
+cp spark-env.sh.template spark-env.sh
+
+vim spark-env.sh
+
+export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export SCALA_HOME=/usr/share/java
+export SPARK_MASTER_IP=192.168.1.7
+export SPARK_WORKER_MEMORY=2g
+export HADOOP_CONF_DIR=/usr/local/hadoop/hadoop-1.2.1/conf
+
+vim slaves
+
+Master
+Slave1
+Slave2
