@@ -144,7 +144,8 @@ http://www.360doc.com/content/14/1224/11/11400509_435371898.shtml
 
 ifconf
 cd ~/
-
+##3台都要設定
+##Master Slave1 Slave2
 #reboot
 vim /etc/hostname
 #reboot
@@ -156,5 +157,93 @@ Slave2 ip
 ping Master 與Slave1 2 做測試
 #停止按Press Ctrl+C or Ctrl+|
 
+##設定ssh無密碼
+ssh Slave1
+cd /root/.ssh
+##傳輸過去給Master
+scp id_rsa.pub root@Master:/root/.ssh/id_rsa.pub.Slave1
+
+ssh Slave2
+cd /root/.ssh
+##傳輸過去給Master
+scp id_rsa.pub root@Master:/root/.ssh/id_rsa.pub.Slave2
+
+ssh Master
+cd /root/.ssh
+##看看兩個是否都成功丟過來
+ls
+
+cat id_rsa.pub >> authorized_keys
+cat id_rsa.pub.Slave1 >> authorized_keys
+cat id_rsa.pub.Slave2 >> authorized_keys
+
+##複製給slaves
+scp authorized_keys root@Slave1:/root/.ssh/authorized_keys
+scp authorized_keys root@Slave2:/root/.ssh/authorized_keys
+
+##ssh大家都應該不用密碼了
+##偶爾有問題看log即可解決
+
+##改三台機器的xml
+##localhost改為 Master
+vim /usr/local/hadoop/hadoop-1.2.1/conf/core-site.xml
+vim /usr/local/hadoop/hadoop-1.2.1/conf/mapred-site.xml
+##1改為3
+vim /usr/local/hadoop/hadoop-1.2.1/conf/hdfs-site.xml
+
+##localhost改為Master
+vim /usr/local/hadoop/hadoop-1.2.1/conf/masters
+
+##localhost改為三個機器的hostname
+vim /usr/local/hadoop/hadoop-1.2.1/conf/slaves
+
+##改完複製去各slaves
+scp masters root@Slave1:/usr/local/hadoop/hadoop-1.2.1/conf
+scp masters root@Slave2:/usr/local/hadoop/hadoop-1.2.1/conf
+scp slaves root@Slave1:/usr/local/hadoop/hadoop-1.2.1/conf
+scp slaves root@Slave2:/usr/local/hadoop/hadoop-1.2.1/conf
+
+hadoop namenode -format
+start-all.sh
+stop-all.sh
+
+##localhost:50070/dfshealth.jsp
+##沒有三個NODE就看下面的歷程吧!
+##ssh有問題
+##MASTER吧
+##依照name的version修改namespcaeID
+
+##SSH解決了
+##可是還是有問題..
+##重開一次有欸!?!?
+##重開一次又失敗...哪朝呢
+##喔喔是自己開了又關
+##偶爾有1偶爾有2..偶爾有MASTER?
+##NAMENODEID修改?
+##清除資料夾檔案好了
+##三個NODE出來了!
+##相關dir從conf/hdfs-site.xml看
+#Remove all existing data in the dfs.data.dir, dfs.datanode.data.dir.
+#Remove all existing data in the dfs.name.dir, dfs.namenode.name.dir.
+#http://stackoverflow.com/questions/24439404/only-one-out-of-3-datanodes-gets-started-in-hadoop
+#http://stackoverflow.com/questions/10097246/no-data-nodes-are-started
 
 
+##開始安裝spark
+#spark-1.0.0-bin-hadoop1.tgz
+#scala-2.10.4
+#每一台都要安裝
+sudo apt-get remove scala-library scala
+wget http://www.scala-lang.org/files/archive/scala-2.10.4.deb
+sudo dpkg -i scala-2.10.4.deb
+sudo apt-get update
+sudo apt-get install scala
+#http://askubuntu.com/questions/555043/about-installing-scala-2-11-4
+
+
+##SCALA_HOME=/usr/share/java
+
+##設定固定IP
+##去改設定檔不知為何沒很大用
+##直接用settings去改
+##http://blog.xuite.net/yh96301/blog/242434403-Ubuntu+14.04%E8%A8%AD%E5%AE%9A%E7%B6%B2%E8%B7%AF%E9%80%A3%E7%B7%9A%E7%82%BA%E5%9B%BA%E5%AE%9AIP
