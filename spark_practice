@@ -24,3 +24,12 @@ vim slaves
 Master
 Slave1
 Slave2
+
+start-all.sh
+##看看jps是否hadoop成功開啟
+
+cd /usr/local/spark/spark-1.0.0-bin-hadoop1/sbin
+./start-all.sh
+
+#jps會多worker Master  #slave部分會多worker
+##Master:8080可以看成功否
