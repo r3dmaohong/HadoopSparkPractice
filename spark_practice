@@ -14,7 +14,7 @@ cp spark-env.sh.template spark-env.sh
 vim spark-env.sh
 
 export JAVA_HOME=/usr/lib/jvm/java-7-oracle
-export SCALA_HOME=/usr/share/java
+export 重開重跑LA_HOME=/usr/share/java
 export SPARK_MASTER_IP=192.168.1.7
 export SPARK_WORKER_MEMORY=2g
 export HADOOP_CONF_DIR=/usr/local/hadoop/hadoop-1.2.1/conf
@@ -33,3 +33,42 @@ cd /usr/local/spark/spark-1.0.0-bin-hadoop1/sbin
 
 #jps會多worker Master  #slave部分會多worker
 ##Master:8080可以看成功否
+
+/usr/local/spark/spark-1.0.0-bin-hadoop1/bin/spark-shell
+
+hadoop dfs -copyFromLocal README.dm ./
+
+##localhost:50070
+
+/usr/local/spark/spark-1.0.0-bin-hadoop1/bin/spark-shell
+sc
+val file = sc.textFile("hdfs://Master:9000/user/root/README.md")
+val sparks = file.filter(line => line.contains("Spark"))
+sparks.count
+sparks.count
+sparks.count
+sparks.cache
+sparks.count
+##master:4040/stages
+##因為有cache, 所以計算變快
+
+##安裝IDE
+mkdir /usr/local/idea
+cd /usr/local/idea
+
+cd ~/Downloads
+tar -xzf ideaIC-XXXXXXXXXXX.tar.gz
+mv ideaIC-XXXXXXXXXX/ /usr/local/idea
+cd /usr/local/idea
+vim ~/.bashrc
+
+export PATH=/usr/local/idea/idea-IC-XXXXX/bin:${SPARK_HOME}/bin:${SCALA_HOME}/bin:${JAVA_HOME}/bin:/usr/local/hadoop/hadoop-1.2.1/bin:$PATH
+
+cd /usr/local/idea/idea-IC-XXXX/bin
+idea.sh
+##有問題就terminal重開重跑
+
+
+
+
+http://stackoverflow.com/questions/16885489/intellij-compile-failures-is-already-defined-as
