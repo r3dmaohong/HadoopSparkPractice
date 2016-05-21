@@ -1,0 +1,7 @@
+spark notebook
+有hadoop在9000
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+export SPARK_HOME=/usr/lib/spark
+export SPARK_WORKER_DIR=/var/run/spark/work
+export EXTRA_CLASSPATH=/usr/lib/hadoop-lzo/lib/hadoop-lzo.jar:/etc/hive/conf
+./bin/spark-notebook -Dconfig.file=./conf/application.conf -Dhttp.port=8989
