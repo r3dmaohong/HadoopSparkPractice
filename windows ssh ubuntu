@@ -1,0 +1,21 @@
+windows ssh ubuntu
+sudo apt-get install openssh-server
+
+##access denied
+/etc/ssh/sshd_config
+##讓root可被登入
+/etc/init.d/ssh restart
+
+http://www.largitdata.com/course/43/
+https://github.com/tribbloid/ISpark
+
+##hadoop2.6.0
+##spark 1.6.1
+
+hadoop 2.6.0
+scala 2.11
+spark 1.6.1
+
+http://selfdesigning.blogspot.tw/2014/12/ubuntuhadoop.html
+http://www.powerxing.com/install-hadoop/
+https://www.youtube.com/watch?v=eHMq5LMsnyM

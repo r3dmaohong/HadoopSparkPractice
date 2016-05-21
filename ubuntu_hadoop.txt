@@ -38,7 +38,9 @@ apt-get install rsync
 
 ##下載hadoop-1.2.1-bin.tar.gz
 mkdir /usr/local/hadoop
+
 cd /root/Downloads/
+wget https://archive.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz
 tar xzf hadoop-1.2.1-bin.tar.gz
 mv hadoop-1.2.1 /usr/local/hadoop
 cd /usr/local/hadoop/hadoop-1.2.1/conf
@@ -239,7 +241,7 @@ sudo dpkg -i scala-2.10.4.deb
 sudo apt-get update
 sudo apt-get install scala
 #http://askubuntu.com/questions/555043/about-installing-scala-2-11-4
-
+exp
 
 ##SCALA_HOME=/usr/share/java
 
