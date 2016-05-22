@@ -1,7 +1,13 @@
 spark notebook
+http://www.jerrynest.com/ubuntu-spark-notebook/
 有hadoop在9000
+https://github.com/andypetrella/spark-notebook/blob/master/details.md
+
 export HADOOP_CONF_DIR=/etc/hadoop/conf
 export SPARK_HOME=/usr/lib/spark
 export SPARK_WORKER_DIR=/var/run/spark/work
 export EXTRA_CLASSPATH=/usr/lib/hadoop-lzo/lib/hadoop-lzo.jar:/etc/hive/conf
 ./bin/spark-notebook -Dconfig.file=./conf/application.conf -Dhttp.port=8989
+
+
+http://hadoopspark.blogspot.tw/2015/09/4-hadoop-26-single-node-cluster.html#more
