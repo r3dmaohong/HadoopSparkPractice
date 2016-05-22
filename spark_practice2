@@ -1,0 +1,12 @@
+##spark #2
+
+/usr/local/spark/spark-1.0.0-bin-hadoop1/bin/spark-shell
+
+val rdd = sc.parallelize(List(1,2,4,3,5))
+val mappedRDD = rdd.map(2*_)
+mappedRDD.collect
+
+val filteredRDD = mappedRDD.filter(_>4)
+filteredRDD.collect
+
+val filteredRDDAgain = sc.parallelize(List(1,2,3,4,5)).nap(2*_).filter(_>4).collect
