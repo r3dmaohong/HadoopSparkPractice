@@ -11,3 +11,22 @@ export EXTRA_CLASSPATH=/usr/lib/hadoop-lzo/lib/hadoop-lzo.jar:/etc/hive/conf
 
 
 http://hadoopspark.blogspot.tw/2015/09/4-hadoop-26-single-node-cluster.html#more
+
+
+
+
+
+tar zxf spark-1.6.0-bin-hadoop2.6.tgz
+sudo mv spark-1.4.0-bin-hadoop2.6 /usr/local/spark
+sudo vim ~/.bashrc
+#export SPARK_HOME=/usr/local/spark
+#export PATH=$PATH:$SPARK_HOME/bin
+source ~/.bashrc
+spark-shell
+
+cd /usr/local/spark/conf
+cp log4j.properties.template log4j.properties
+sudo vim log4.properties
+#第一個INFO改為WARN
+
+spark-shell
