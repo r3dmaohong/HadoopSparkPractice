@@ -32,6 +32,6 @@ wget http://ftp.twaren.net/Unix/Web/apache/hadoop/common/hadoop-2.6.0/hadoop-2.6
 sudo tar -zxvf hadoop-2.6.0.tar.gz
 sudo mv hadoop-2.6.0 /usr/local/hadoop
 ll /usr/local/hadoop
-
+rm hadoop-2.6.0.tar.gz
 
 ######
