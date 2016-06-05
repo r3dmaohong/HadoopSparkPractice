@@ -34,4 +34,103 @@ sudo mv hadoop-2.6.0 /usr/local/hadoop
 ll /usr/local/hadoop
 rm hadoop-2.6.0.tar.gz
 
+sudo gedit ~/.bashrc
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_HOME=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin 
+export PATH=$PATH:$HADOOP_HOME/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH
+
+source ~/.bashrc
+
+sudo gedit /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+sudo gedit /usr/local/hadoop/etc/hadoop/core-site.xml
+
+<property>
+   <name>fs.default.name</name>
+   <value>hdfs://localhost:9000</value>
+</property> 
+
+sudo gedit /usr/local/hadoop/etc/hadoop/yarn-site.xml
+
+<property>
+   <name>yarn.nodemanager.aux-services</name>
+   <value>mapreduce_shuffle</value>
+</property>
+<property>
+   <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+   <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+
+sudo cp /usr/local/hadoop/etc/hadoop/mapred-site.xml.template /usr/local/hadoop/etc/hadoop/mapred-site.xml
+sudo gedit /usr/local/hadoop/etc/hadoop/mapred-site.xml
+
+<property>
+   <name>mapreduce.framework.name</name>
+   <value>yarn</value>
+</property>
+
+sudo gedit /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+
+<property>
+   <name>dfs.replication</name>
+   <value>3</value>
+</property>
+<property>
+   <name>dfs.namenode.name.dir</name>
+   <value> file:/usr/local/hadoop/hadoop_data/hdfs/namenode</value>
+</property>
+<property>
+   <name>dfs.datanode.data.dir</name>
+   <value> file:/usr/local/hadoop/hadoop_data/hdfs/datanode</value>
+ </property>
+
+
+sudo mkdir -p /usr/local/hadoop/hadoop_data/hdfs/namenode
+sudo mkdir -p /usr/local/hadoop/hadoop_data/hdfs/datanode
+sudo chown hduser:hduser -R /usr/local/hadoop
+hadoop namenode -format
+
+start-all.sh
+
+#http://localhost:8088/
+#http://localhost:50070/
 ######
+
+
+##設定master跟slave的的話先用單機的再製
+##然後做設定
+
+##IP設定有問題
+##用內建設定去改
+##8.8.8.8
+192.168.1.7  2 3 5
+255.255.255.0
+192.168.1.1
+8.8.8.8
+
+
+
+#http://192.168.1.7:50070/
+##hdfs相關指令
+hadoop fs -mkdir
+hadoop fs -ls
+hadoop fs -copyFromLocal
+hadoop fs -put (跟copyfromlocal類似，不過是直接取代舊有檔案，不過問)
+hadoop fs -copyToLocal
+hadoop fs -get
+hadoop fs -cp
+hadoop fs -rm
