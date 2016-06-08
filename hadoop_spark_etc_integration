@@ -1,5 +1,7 @@
 ##用新書的步驟從頭到尾建一個好了..
 ##guest addition cd可以解決解析度跟延遲問題
+##...16.04怎麼用一用卡住
+##還是先學書用14.10
 
 ##安裝以用putty
 sudo apt-get install openssh-server
