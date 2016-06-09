@@ -2,6 +2,9 @@
 ##guest addition cd可以解決解析度跟延遲問題
 ##...16.04怎麼用一用卡住
 ##還是先學書用14.10
+##天啊問題更多 一堆package安裝不了
+##update to 15.04
+##更新後就可了..
 
 ##安裝以用putty
 sudo apt-get install openssh-server
@@ -38,7 +41,7 @@ rm hadoop-2.6.0.tar.gz
 
 sudo gedit ~/.bashrc
 
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 export HADOOP_HOME=/usr/local/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin 
 export PATH=$PATH:$HADOOP_HOME/sbin
@@ -57,7 +60,8 @@ source ~/.bashrc
 
 sudo gedit /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+##修改
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 
 sudo gedit /usr/local/hadoop/etc/hadoop/core-site.xml
 
@@ -136,3 +140,17 @@ hadoop fs -copyToLocal
 hadoop fs -get
 hadoop fs -cp
 hadoop fs -rm
+##
+
+hadoop fs -mkdir /user
+hadoop fs -mkdir /user/hduser
+hadoop fs -mkdir /user/hduser/test
+hadoop fs -ls
+hadoop fs -ls /
+hadoop fs -ls /user
+hadoop fs -ls /user/hduser
+hadoop fs -ls -R /
+hadoop fs -mkdir -p /dir1/dir2/dir3
+hadoop fs -ls -R /
+
+
