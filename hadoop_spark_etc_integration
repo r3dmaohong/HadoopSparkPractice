@@ -153,4 +153,50 @@ hadoop fs -ls -R /
 hadoop fs -mkdir -p /dir1/dir2/dir3
 hadoop fs -ls -R /
 
+hadoop fs -copyFromLocal /usr/local/hadoop/README.txt /user/hduser/test
+hadoop fs -copyFromLocal /usr/local/hadoop/README.txt /user/hduser/test/test1.txt
+hadoop fs -ls /user/hduser/test
 
+hadoop fs -cat /user/hduser/test/README.txt
+hadoop fs -cat /user/hduser/test/README.txt|more
+
+hadoop fs -copyFromLocal /usr/local/hadoop/NOTICE.txt /usr/local/hadoop/LICENSE.txt /user/hduser/test
+
+hadoop fs -copyFromLocal /usr/local/hadoop/etc /user/hduser/test
+hadoop fs -ls /user/hduser/test
+hadoop fs -ls R /user/hduser/test/etc
+
+hadoop fs -put /usr/local/hadoop/README.txt /user/hduser/test/test2.txt
+
+echo echo.test | hadoop fs -put - /user/hduser/test/echoin.txt
+hadoop fs -cat /user/hduser/test/echoin.txt
+
+ls /usr/local/hadoop | hadoop fs -put - /user/hduser/test/hadooplist.txt
+hadoop fs -cat /user/hduser/test/hadooplist.txt
+
+mkdir test
+cd test
+hadoop fs -copyToLocal /user/hduser/test/hadooplist.txt
+
+hadoop fs -copyToLocal /user/hduser/test/etc
+hadoop fs -get /user/hduser/test/README.txt localREADME.txt
+ll
+
+hadoop fs -mkdir /user/hduser/test/temp
+hadoop fs -cp /user/hduser/test/README.txt /user/hduser/test/temp
+hadoop fs -ls /user/hduser/test/temp
+
+hadoop fs -ls /user/hduser/test
+hadoop fs -rm /user/hduser/test/test2.txt
+
+hadoop fs -ls /user/hduser/test
+hadoop fs -rm -R /user/hduser/test/etc
+
+mkdir -p ~/wordcount/input
+cd ~/wordcount
+
+vim WordCount.java
+
+##
+
+##
