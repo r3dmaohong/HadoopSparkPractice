@@ -198,5 +198,146 @@ cd ~/wordcount
 vim WordCount.java
 
 ##
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class WordCount {
+
+  public static class TokenizerMapper
+       extends Mapper<Object, Text, Text, IntWritable>{
+
+    private final static IntWritable one = new IntWritable(1);
+    private Text word = new Text();
+
+    public void map(Object key, Text value, Context context
+                    ) throws IOException, InterruptedException {
+      StringTokenizer itr = new StringTokenizer(value.toString());
+      while (itr.hasMoreTokens()) {
+        word.set(itr.nextToken());
+        context.write(word, one);
+      }
+    }
+  }
+
+  public static class IntSumReducer
+       extends Reducer<Text,IntWritable,Text,IntWritable> {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable<IntWritable> values,
+                       Context context
+                       ) throws IOException, InterruptedException {
+      int sum = 0;
+      for (IntWritable val : values) {
+        sum += val.get();
+      }
+      result.set(sum);
+      context.write(key, result);
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    Configuration conf = new Configuration();
+    Job job = Job.getInstance(conf, "word count");
+    job.setJarByClass(WordCount.class);
+    job.setMapperClass(TokenizerMapper.class);
+    job.setCombinerClass(IntSumReducer.class);
+    job.setReducerClass(IntSumReducer.class);
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(IntWritable.class);
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    System.exit(job.waitForCompletion(true) ? 0 : 1);
+  }
+}
 
 ##
+
+ll
+
+sudo vim ~/.bashrc
+
+##hadoop variables
+#scala variables
+export SCALA_HOME=/usr/local/scala
+export PATH=$PATH:$SCALA_HOME/bin
+#spark variables
+export SPARK_HOME=/usr/local/spark
+export PATH=$PATH:SPARK_HOME/bin
+#
+export PATH=${JAVA_HOME}/bin:${PATH}
+export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
+
+
+source ~/.bashrc
+
+hadoop com.sun.tools.javac.Main WordCount.java
+jar cf wc.jar WordCount*.class
+ll
+
+
+##這重做
+cd ~/wordcount/input
+wget https://raw.githubusercontent.com/arron-green/hadoop-city-farmers-market-example/master/input/pg5000.txt
+
+hadoop fs -mkdir -p /user/hduser/wordcount/input
+hadoop fs -copyFromLocal pg5000.txt /user/hduser/wordcount/input
+hadoop fs -ls /user/hduser/wordcount/input
+
+cd ~/wordcount
+hadoop jar wc.jar WordCount /user/hduser/wordcount/input/pg5000.txt /user/hduser/wordcount/output
+
+hadoop fs -ls /user/hduser/wordcount/output
+hadoop fs -cat /user/hduser/wordcount/output/part-r-00000
+
+##練習重做
+cd ~/wordcount/input
+rm pg5000.txt
+wget https://raw.githubusercontent.com/arron-green/hadoop-city-farmers-market-example/master/input/pg5000.txt
+
+hadoop fs -rm /user/hduser/wordcount/input/pg5000.txt
+hadoop fs -ls /user/hduser/wordcount/input
+hadoop fs -copyFromLocal pg5000.txt /user/hduser/wordcount/input
+hadoop fs -ls /user/hduser/wordcount/input
+
+cd ~/wordcount
+hadoop fs -rm -R /user/hduser/wordcount/output
+hadoop jar wc.jar WordCount /user/hduser/wordcount/input/pg5000.txt /user/hduser/wordcount/output
+hadoop fs -ls /user/hduser/wordcount/output
+hadoop fs -cat /user/hduser/wordcount/output/part-r-00000
+
+##spark
+wget http://www.scala-lang.org/files/archive/scala-2.11.6.tgz
+tar xvf scala-2.11.6.tgz
+sudo mv scala-2.11.6 /usr/local/scala
+rm scala-2.11.6.tgz
+
+wget https://archive.apache.org/dist/spark/spark-1.4.0/spark-1.4.0-bin-hadoop2.6.tgz
+tar zxf spark-1.4.0-bin-hadoop2.6.tgz
+sudo mv spark-1.4.0-bin-hadoop2.6 /usr/local/spark
+rm spark-1.4.0-bin-hadoop2.6.tgz
+
+spark-shell
+exit
+
+cd /usr/local/spark/conf
+cp log4j.properties.template log4j.properties
+sudo vim log4j.properties
+#第一個INFO改為WARN
+
+spark-shell --master local[2]
+val textFile = sc.textFile("file:/usr/local/spark/README.md")
+textFile.count
+
+val textFile = sc.textFile("hdfs://localhost:9000/user/hduser/wordcount/input/pg5000.txt")
+textFile.count
+
