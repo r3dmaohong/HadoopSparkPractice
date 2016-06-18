@@ -341,3 +341,127 @@ textFile.count
 val textFile = sc.textFile("hdfs://localhost:9000/user/hduser/wordcount/input/pg5000.txt")
 textFile.count
 
+exit
+##
+SPARK_JAR=/usr/local/spark/lib/spark-assembly-1.4.0-hadoop2.6.0.jar HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop MASTER=yarn-client /usr/local/spark/bin/spark-shell
+val textFile = sc.textFile("file:/usr/local/spark/README.md")
+textFile.count
+val textFile = sc.textFile("hdfs://localhost:9000/user/hduser/wordcount/input/pg5000.txt")
+textFile.count
+##http://192.168.1.7:8088/cluster
+
+cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh
+sudo vim /usr/local/spark/conf/spark-env.sh
+/usr/local/spark/sbin/start-all.sh
+
+spark-shell --master spark://hadoop:7077
+#http://192.168.1.7:8080/
+
+val textFile = sc.textFile("file:/usr/local/spark/README.md")
+textFile.count
+val textFile = sc.textFile("hdfs://localhost:9000/user/hduser/wordcount/input/pg5000.txt")
+textFile.count
+exit
+/usr/local/spark/sbin/stop-all.sh
+##
+##
+spark-shell
+val intRDD = sc.parallelize(List(3,1,2,5,5))
+intRDD.collect()
+
+val stringRDD = sc.parallelize(List("Apple","Orange","Banana","Grape","Apple"))
+stringRDD.collect()
+
+def addOne(x:Int):Int={
+	return(x+1)
+}
+intRDD.map(addOne).collect
+
+intRDD.map(x=>x+1).collect()
+intRDD.map(_+1).collect()
+
+stringRDD.map(x=>"fruit:"+x).collect
+
+intRDD.filter(x=>x<3).collect()
+intRDD.filter(_<3).collect()
+
+stringRDD.filter(x=>x.contains("ra")).collect()
+
+intRDD.distinct().collect()
+stringRDD.distinct().collect()
+
+val sRDD = intRDD.randomSplit(Array(0.4,0.6))
+sRDD(0).collect()
+sRDD(1).collect()
+
+val gRDD=intRDD.groupBy(x=>{if(x%2==0)"even" else "odd"}).collect
+gRDD(0)
+gRDD(1)
+
+##
+val intRDD1 = sc.parallelize(List(3,1,2,5,5))
+val intRDD2 = sc.parallelize(List(5,6))
+val intRDD3 = sc.parallelize(List(2,7))
+
+intRDD1.union(intRDD2).union(intRDD3).collect
+(intRDD1++intRDD2++intRDD3).collect()
+
+intRDD1.intersection(intRDD2).collect()
+intRDD1.subtract(intRDD2).collect()
+
+intRDD1.cartesian(intRDD2).collect()
+
+##
+intRDD.first
+intRDD.take(2)
+intRDD.takeOrdered(3)
+intRDD.takeOrdered(3)(Ordering[Int].reverse)
+
+intRDD.stats
+intRDD.min
+intRDD.max
+intRDD.stdev
+intRDD.count
+intRDD.sum
+intRDD.mean
+
+##第一個是key 第二個是value
+val kvRDD1 = sc.parallelize(List((3,4),(3,6),(5,6),(1,2)))
+kvRDD1.keys.collect()
+kvRDD1.values.collect()
+kvRDD1.filter{case (key,value)=>key<5}.collect()
+kvRDD1.filter{case (key,value)=>value<5}.collect()
+kvRDD1.mapValues(x=>x*x).collect
+
+kvRDD1.sortByKey().collect
+kvRDD1.sortByKey(true).collect
+kvRDD1.sortByKey(false).collect
+
+kvRDD1.reduceByKey((x,y)=>x+y).collect
+kvRDD1.reduceByKey(_+_).collect
+
+val kvRDD1 = sc.parallelize(List((3,4),(3,6),(5,6),(1,2)))
+val kvRDD2 = sc.parallelize(List((3,8)))
+
+kvRDD1.join(kvRDD2).foreach(println)
+kvRDD1.leftOuterJoin(kvRDD2).foreach(println)
+kvRDD1.rightOuterJoin(kvRDD2).foreach(println)
+kvRDD1.subtractByKey(kvRDD2).collect
+
+kvRDD1.first()
+kvRDD1.take(2)
+
+val kvFirst = kvRDD1.first
+kvFirst._1
+kvFirst._2
+
+kvRDD1.countByKey()
+var KV=kvRDD1.collectAsMap()
+KV(3)
+KV(1)
+KV(5)
+
+kvRDD1.lookup(3)
+kvRDD1.lookup(5)
+kvRDD1.lookup(1)
+
