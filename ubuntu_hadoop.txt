@@ -14,7 +14,7 @@ greeter-show-manual-login=true
 allow-guest=false
 
 sudo passwd root
-reboot -h now
+sudo reboot -h now
 ##記得換成root
 
 ##安裝jdk有問題 用內建的吧 http://apexu.com/apexu/tw/modules/publisher/item.php?itemid=35
@@ -32,7 +32,7 @@ ssh-keygen -t rsa -P ""
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ssh localhost
 exit
-ssh loclahost
+ssh localhost
 
 apt-get install rsync
 

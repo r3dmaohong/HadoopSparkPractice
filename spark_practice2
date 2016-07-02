@@ -10,3 +10,5 @@ val filteredRDD = mappedRDD.filter(_>4)
 filteredRDD.collect
 
 val filteredRDDAgain = sc.parallelize(List(1,2,3,4,5)).nap(2*_).filter(_>4).collect
+
+hadoop dfs -mkdir -p input

@@ -535,3 +535,95 @@ stringRDD.map((_,1)).reduceByKey(_+_).foreach(println)
 #設定windows跟虛擬機unbuntu共享資料夾
 #https://briian.com/6241/virtualbox-share-folder.html/2
 
+mkdir -p /home/hduser/Desktop/share/spark_practice/Lib
+sudo cp /usr/local/spark/lib/spark-assembly-1.4.0-hadoop2.6.0.jar /home/hduser/Desktop/share/spark_practice/Lib
+cd /home/hduser/Desktop/share/spark_practice/Lib
+wget http://www.java2s.com/Code/JarDownload/joda/joda-time-2.2.jar.zip
+unzip -j joda-time-2.2.jar.zip
+
+wget http://www.java2s.com/Code/JarDownload/jfreechart/jfreechart-1.0.3.jar.zip
+unzip -j jfreechart-1.0.3.jar.zip
+
+wget http://www.java2s.com/Code/JarDownload/jcommon/jcommon-1.0.16.jar.zip
+unzip -j jcommon-1.0.16.jar.zip
+
+rm *.zip
+
+cd ..
+mkdir data
+cd data
+wget https://raw.githubusercontent.com/nlesc-sherlock/hadoop-streaming-docker/master/data/gutenberg/pg5000.txt
+
+###
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import org.apache.spark._
+
+object RunWordCount{
+	def main(args:Array[String]):Unit={
+	Logger.getLogger("org").setLevel(Level.OFF)
+	System.setProperty("spark.ui.showConsoleProgress","false")
+
+	println("start running RunWordCount")
+	val sc = new SparkContext(new SparkConf().setAppName("wordCount").setMaster("local[4]"))
+	println("start importing txt file...")
+	val textFile = sc.textFile("data/pg5000.txt")
+	println("start establishing RDD...")
+	val countsRDD = textFile.flatMap(line=>line.split(" ")).map(word=>(word,1)).reduceByKey(_+_)
+	println("start saving output to txt file...")
+	try{
+		countsRDD.saveAsTextFile("data/output")
+		println("save file sucessfully")
+	}catch{
+		case e:Exception=>println("output dir already exist. please remove the dir first")
+	}
+	}
+}
+###
+##可匯出jar
+
+rm -R ~/Desktop/share/WordCount/data/output
+cd ~/Desktop/share/WordCount
+spark-submit --driver-memory 2g --master local[4] --class RunWordCount bin/WordCount.jar
+
+ll data/output
+##
+
+start-all.sh
+hadoop fs -mkdir data
+hadoop fs -copyFromLocal ~/Desktop/share/WordCount/data/pg5000.txt data
+hadoop fs -ls data
+
+sudo vim ~/.bashrc
+
+export HADDOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
+
+source ~/.bashrc
+
+cd ~/Desktop/share/WordCount
+
+spark-submit --driver-memory 2g --class RunWordCount --master yarn-client bin/WordCount.jar
+hadoop fs -ls data/output
+hadoop fs -cat data/output /user/hduser/data/output/part-00000|more
+hadoop fs -rm -R data/output
+
+##
+/usr/local/spark/sbin/start-all.sh
+cd ~/Desktop/share/WordCount
+spark-submit --driver-memory 2g --class RunWordCount --master spark://localhost:7077 bin/WordCount.jar
+
+hadoop fs -ls data/output
+##
+
+cd ~/
+wget http://www.drmaster.com.tw/download/example/MP21517_sample.zip
+unzip MP21517_sample.zip
+ll
+
+###
+###
+
+mkdir -p ~/workspace/Recommend/data
+cd ~/workspace/Recommend/data
+wget http://files.grouplens.org/datasets/movielens/ml-100k.zip
+

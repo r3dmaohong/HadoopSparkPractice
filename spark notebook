@@ -15,7 +15,7 @@ http://hadoopspark.blogspot.tw/2015/09/4-hadoop-26-single-node-cluster.html#more
 
 
 
-
+##下錯了 變成1.6.1...
 tar zxf spark-1.6.0-bin-hadoop2.6.tgz
 sudo mv spark-1.4.0-bin-hadoop2.6 /usr/local/spark
 sudo vim ~/.bashrc
@@ -26,7 +26,11 @@ spark-shell
 
 cd /usr/local/spark/conf
 cp log4j.properties.template log4j.properties
-sudo vim log4.properties
+sudo vim log4j.properties
 #第一個INFO改為WARN
 
 spark-shell
+
+dfs路徑要注意
+以目前為例
+以/usr/mao為home
