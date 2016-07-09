@@ -626,4 +626,24 @@ ll
 mkdir -p ~/workspace/Recommend/data
 cd ~/workspace/Recommend/data
 wget http://files.grouplens.org/datasets/movielens/ml-100k.zip
+unzip -j ml-100k
+
+start-all.sh
+cd ~/workspace/Recommend/data
+spark-shell
+val rawUserData = sc.textFile("file:/home/hduser/workspace/Recommend/data/u.data")
+
+rawUserData.first()
+rawUserData.take(5).foreach(println)
+rawUserData.map(_.split('\t')(0).toDouble).stats()
+rawUserData.map(_.split('\t')(1).toDouble).stats()
+rawUserData.map(_.split('\t')(2).toDouble).stats()
+
+#
+
+import org.apache.spark.mllib.recommendation.ALS
+import org.apache.spark.mllib.recommendation.Rating
+val rawRatings = rawUserData.map(_.split("\t").take(3))
+val ratingRDD = rawRatings.map{case Array(user,movie,rating)=>Rating(user.toInt,movie.toInt,rating.toDouble)}
+val model = ALS.train(ratingRDD,10,10,0.01)
 
