@@ -647,3 +647,13 @@ val rawRatings = rawUserData.map(_.split("\t").take(3))
 val ratingRDD = rawRatings.map{case Array(user,movie,rating)=>Rating(user.toInt,movie.toInt,rating.toDouble)}
 val model = ALS.train(ratingRDD,10,10,0.01)
 
+model.recommendProducts(196,5).mkString("\n")
+model.predict(196,464)
+model.recommendProducts(464,5).mkString("\n")
+
+val itemRDD = sc.textFile("file:/home/hduser/workspace/Recommend/data/u.item")
+val movieTitle = itemRDD.map(line=>line.split("\\|").take(2)).map(array=>(array(0).toInt,array(1))).collectAsMap()
+movieTitle.take(5).foreach(println)
+movieTitle(146)
+model.recommendProducts(196,5).map(rating=>(rating.product,movieTitle(rating.product),rating.rating)).foreach(println)
+
